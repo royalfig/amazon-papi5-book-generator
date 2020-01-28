@@ -1,0 +1,22 @@
+{
+  "name": "amazon-brl",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon --legacy-watch -e ejs,css,js ./bin/www"
+  },
+  "dependencies": {
+    "amazon-pa-api50": "0.0.3",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "lodash": "^4.17.15",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.2",
+    "tailwindcss": "^1.1.4"
+  }
+}
