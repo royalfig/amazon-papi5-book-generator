@@ -1,4 +1,5 @@
 var createError = require("http-errors");
+const auth = require("./middleware/auth")
 var express = require("express");
 var path = require("path");
 require("dotenv").config();
@@ -6,9 +7,9 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const bodyParser = require("body-parser");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var searchRouter = require("./routes/search");
+const loginRouter = require("./routes/login")
+const searchRouter = require("./routes/search")
+const resultsRouter = require("./routes/results")
 
 var app = express();
 
@@ -26,17 +27,18 @@ app.use(
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+app.use("/", loginRouter);
+app.use(auth);
 app.use("/search", searchRouter);
-app.use("/users", usersRouter);
+app.use("/results", resultsRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
