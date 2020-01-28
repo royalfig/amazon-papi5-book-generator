@@ -1,17 +1,26 @@
 var createError = require("http-errors");
-const auth = require("./middleware/auth")
+// const auth = require("./middleware/auth");
 var express = require("express");
+const basicAuth = require("express-basic-auth");
 var path = require("path");
 require("dotenv").config();
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const bodyParser = require("body-parser");
 
-const loginRouter = require("./routes/login")
-const searchRouter = require("./routes/search")
-const resultsRouter = require("./routes/results")
+const searchRouter = require("./routes/search");
+const resultsRouter = require("./routes/results");
+
+const password = process.env.LOGIN_PASSWORD;
 
 var app = express();
+
+app.use(basicAuth({
+  users: {
+    "hss": password
+  },
+  challenge: true
+}))
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -27,9 +36,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", loginRouter);
-app.use(auth);
-app.use("/search", searchRouter);
+app.use("/", searchRouter);
 app.use("/results", resultsRouter);
 
 // catch 404 and forward to error handler
