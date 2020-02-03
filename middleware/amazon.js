@@ -17,7 +17,7 @@ resourceList = resourceList.concat(resources.getImagesPrimary);
 
 const bookParse = async input => {
   try {
-    const books = input.split(/\r\n/);
+    const books = input.trim().split(/\r\n/);
     const obj = await getBookInfo(books);
     return obj;
   } catch {
@@ -28,6 +28,23 @@ const bookParse = async input => {
 async function sleep(millis) {
   return new Promise(resolve => setTimeout(resolve, millis));
 }
+
+const nameParser = input => {
+  if (/,/.test(input)) {
+    const first = input.match(/,(.+)/)[1].trim() || "";
+    const last = input.match(/(.+),/)[1].trim() || "";
+    const full = `${first} ${last}`;
+    const name = { first: first, last: last, full: full };
+    return name;
+  }
+
+  const spaces = input.split(" ");
+  const last = spaces.pop();
+  let first = spaces.join(" ");
+  const full = `${first} ${last}`;
+  const name = { first: first, last: last, full: full };
+  return name;
+};
 
 const getBookInfo = async books => {
   let bookArr = [];
@@ -41,6 +58,7 @@ const getBookInfo = async books => {
           searchIndex: searchIndex.Books
         })
         .then(res => {
+          console.log(res.data.SearchResult.Items[0]);
           if (res.data.SearchResult) {
             const base = res.data.SearchResult.Items[0] || "";
             const title = base.ItemInfo.Title.DisplayValue || "";
@@ -49,52 +67,52 @@ const getBookInfo = async books => {
             const author = base.ItemInfo.ByLineInfo
               ? base.ItemInfo.ByLineInfo.Contributors[0].Name
               : "";
-            const last = author.match(/(.+),/)[1].trim() || "";
-            const first = author.match(/,(.+)/)[1].trim() || "";
-            const fullName = first + " " + last || author;
-            const html = `<div class="ama-body-item"><a class="ama-body-link" href="${url}" target="_blank" rel="noopener noreferrer"><img class="ama-body-image" src="${img}" alt="${title} by ${fullName}"></a></div>`;
+
+            const { first, last, full } = nameParser(author);
+            const rawDate =
+              new Date(
+                base.ItemInfo.ContentInfo.PublicationDate.DisplayValue
+              ) || "";
+            const pubDate = rawDate.getFullYear() || "";
+            const pages =
+              base.ItemInfo.ContentInfo.PagesCount.DisplayValue || "";
+            console.log(base.ItemInfo.ByLineInfo.Contributors);
+            const pub =
+              base.ItemInfo.ByLineInfo.Manufacturer.DisplayValue || "";
             const htmlStructured = `<div class="ama-body-item">
                 <a class="ama-body-link" href="${url}" target="_blank" rel="noopener noreferrer">
-                    <img class="ama-body-image" src="${img}" alt="${title} by ${fullName}">
+                    <img class="ama-body-image" src="${img}" alt="${title} by ${full}">
                 </a>
             </div>`;
 
-            console.log(`Fetching ${title} by ${fullName}`);
+            console.log(`Fetching ${title} by ${full}`);
 
             const titleObj = {
               title: title,
               img: img,
               url: url,
-              author: author,
-              last: last,
+              rawAuthor: author,
               first: first,
-              fullName: fullName,
-              html: html,
+              last: last,
+              full: full,
+              pub: pub,
+              pubDate: pubDate,
+              pages: pages,
               htmlString: htmlStructured
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
             };
-            console.log(titleObj.htmlString);
-            fs.appendFile(
-              "./public/amazon_continued.html",
-              titleObj.html,
-              err => {
-                if (err) return console.log(err);
-              }
-            );
-            fs.writeFile("./public/amazon.html", titleObj.html, err => {
-              if (err) return console.log(err);
-            });
+
+            // TODO Add file creation for dl
+
             return titleObj;
           }
+
           errorArr.push(book);
           throw Error(`Title not found: ${book}`);
         })
         .then(titleObj => {
           bookArr.push(titleObj);
-        })
-        .catch(err => {
-          console.error(err.message);
         });
     } catch (e) {
       console.log(`Error: ${e}`);

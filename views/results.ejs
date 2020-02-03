@@ -1,101 +1,122 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title><%= title %></title>
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <link rel="stylesheet" href="/stylesheets/mystyles.css" />
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+  </head>
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-</head>
-
-<body class="body">
-    <section class="container ">
-        <div class="row">
-            <div class="col s10 offset-s1">
-                <header class="header">
-                    <a href="/"><img class="responsive-img logo" src="\images\hss_logo.svg" alt="HSS Logo" /></a>
-                    <h1><% if (titleNum === 1) { %> Search Result <% } else { %> <%= title %> <% } %> <span
-                            class="title-number green lighten-2"><%= titleNum %></span>
-                    </h1>
-                    <a href="#preview" class="waves-effect waves-light btn-small green lighten-2">Preview</a>
-                    <a href="#code" class="waves-effect waves-light btn-small green lighten-2">Code</a>
-                    <a href="#text" class="waves-effect waves-light btn-small green lighten-2">text</a>
-                </header>
-            </div>
+  <body class="body">
+    <section class="hero is-dark">
+      <div class="hero-body">
+        <div class="container">
+          <a href="/">
+            <figure class="image image is-600x100" style="margin-bottom: 1rem;">
+              <img
+                src="/images/hss_logo.svg"
+                style="width: 600px; max-width: 100%;"
+              />
+            </figure>
+          </a>
+          <h1 class="title"><%= title %></h1>
+          <a href="#preview" class="button is-link">Preview</a>
+          <a href="#code" class="button is-link">Code</a>
+          <a href="#text" class="button is-link">Table</a>
         </div>
-
-        <div class="row">
-            <div class="col s10 offset-s1">
-
-                <% if (errors.length > 0) { %>
-                <p class="red">The following titles failed</p>
-                <code>
-                    <% errors.forEach(function(error) {%>
-                    <%= error %>
-                    <% }) %>
-                </code>
-                <% } %>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s10 offset-s1">
-                <h2 id="preview">Preview</h2>
-                <div class="ama-body-container">
-                    <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
-                    <div class="ama-body-item">
-                        <a class="ama-body-link" href="<%= element.url %>" target="_blank" rel="noopener noreferrer">
-                            <img class="ama-body-image lazy-loaded" src="<%= element.img %>"
-                                alt="<%= element.title %> by <%= element.fullName %>">
-                        </a>
-                    </div>
-                    <% } ) } %>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s10 offset-s1">
-                <h2 id="code">Code</h2>
-                <div class="green darken-4" style="padding: 1rem;">
-                    <code class="green darken-4 white-text" style=" user-select: all;">
-                        <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
-                        <%- element.htmlString %>
-                        <% } ) } %>
-                    </code>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s12">
-                <h2 id="text">Text</h2>
-                <table class="striped responsive-table" style="user-select: all;">
-                    <thead>
-                        <tr>
-                            <th>Author</th>
-                            <th>Title</th>
-                            <th>Image</th>
-                            <th>URL</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
-                        <tr>
-                            <td><%= element.fullName %></td>
-                            <td><%= element.title %></td>
-                            <td><%= element.img %></td>
-                            <td><%= element.url %></td>
-                        </tr>
-                        <% } ) } %>
-                </table>
-            </div>
-
+      </div>
     </section>
-</body>
 
+    <section class="section">
+      <div class="container">
+        <% if (errors.length > 0) { %>
+        <p class="red">The following titles failed</p>
+        <code>
+          <% errors.forEach(function(error) {%> <%= error %> <% }) %>
+        </code>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-2" id="preview">Preview</h2>
+        <div class="columns">
+          <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
+          <div class="column is-one-quarter">
+            <div class="card">
+              <div class="card-image">
+                <a href="<%= element.url %>">
+                  <figure class="image is-4by5">
+                    <img src="<%= element.img %>" alt="<%= element.title %>" />
+                  </figure>
+                </a>
+              </div>
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-4"><%= element.full %></p>
+                  </div>
+                </div>
+                <div class="content">
+                  <a href="<%= element.url %>"><%= element.title %></a>
+                  <p><%= element.pub %> (<%= element.pubDate %>)</p>
+                  <p>Pages: <%= element.pages %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } ) } %>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-2" id="code">Code</h2>
+        <div class="content">
+          <code class="is-family-monospace" style=" user-select: all;">
+            <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
+            <%- element.htmlString %> <% } ) } %>
+          </code>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-2" id="text">Text</h2>
+        <table class="table is-striped">
+          <thead>
+            <tr>
+              <th>Author</th>
+              <th>Title</th>
+              <th>Image</th>
+              <th>URL</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
+            <tr>
+              <td><%= element.full %></td>
+              <td><%= element.title %></td>
+              <td><%= element.img %></td>
+              <td><%= element.url %></td>
+            </tr>
+            <% } ) } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p><strong>History of Science Society</strong> Book Search</p>
+      </div>
+    </footer>
+  </body>
 </html>

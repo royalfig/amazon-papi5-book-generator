@@ -1,65 +1,75 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title><%= title %></title>
 
-<head>
-  <title><%= title %></title>
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <link rel="stylesheet" href="/stylesheets/mystyles.css" />
 
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+  </head>
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-
-  <link rel="stylesheet" href="/stylesheets/style.css" />
-</head>
-
-<body class="body">
-  <section class="container">
-    <div class="row">
-      <div class="col s10 m6 offset-m3 offset-s1">
-        <header class="header">
-          <a href="/"><img class="responsive-img logo" src="\images\hss_logo.svg" alt="HSS Logo" /></a>
-          <h1><%= title %></h1>
-          <p class="subtitle">Let's populate some titles</p>
-        </header>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col s10 m6 offset-m3 offset-s1">
-        <div class="row">
-          <form class="col s12" action="/results" method="post">
-            <div class="row">
-              <div class="input-field col s12">
-                <textarea id="textarea1" class="materialize-textarea" name="titles" required></textarea>
-                <label for="textarea1">Titles</label>
-                <button class="btn waves-effect waves-light green lighten-2" type="submit"
-                  onclick="showLoading(this)">Submit
-                  <i class="material-icons right">send</i>
-                </button>
-                <div id="loader" class="progress green lighten-2">
-                  <div class="indeterminate"></div>
-                </div>
-              </div>
-            </div>
-          </form>
+  <body class="body">
+    <section class="hero is-dark">
+      <div class="hero-body">
+        <div class="container">
+          <a href="/">
+            <figure class="image image is-600x100" style="margin-bottom: 1rem;">
+              <img
+                src="/images/hss_logo.svg"
+                style="width: 600px; max-width: 100%;"
+              />
+            </figure>
+          </a>
+          <h1 class="title"><%= title %></h1>
+          <h2 class="subtitle">Let's populate some titles 📕📗📘📙</h2>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <script>
-    function showLoading(e) {
+    <section class="section">
+      <div class="container">
+        <form action="/results" method="post">
+          <div class="field">
+            <div class="control">
+              <textarea
+                id="textarea1"
+                class="textarea"
+                name="titles"
+                placeholder="Enter your titles or ISBNs"
+                aria-label="Enter your titles or ISBNs"
+                required
+              ></textarea>
+            </div>
+          </div>
 
-      const textarea = document.querySelector('.materialize-textarea').value;
-      const loader = document.getElementById('loader');
+          <button
+            class="button is-dark is-outlined is-rounded"
+            id="submit-search"
+            type="submit"
+            onclick="showLoading(this)"
+          >
+            <span>Submit</span>
+            <span class="icon is-small">
+              <i class="far fa-paper-plane"></i>
+            </span>
+          </button>
+        </form>
+      </div>
+    </section>
 
-      if (textarea !== "") {
-        e.style.display = 'none';
-        loader.style.display = 'block'
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p><strong>History of Science Society</strong> Book Search</p>
+      </div>
+    </footer>
+
+    <script>
+      function showLoading(e) {
+        e.classList.add("is-loading");
       }
-    }
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
