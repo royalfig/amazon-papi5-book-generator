@@ -30,6 +30,11 @@ async function sleep(millis) {
 }
 
 const nameParser = input => {
+  if (input === "") {
+    const name = { first: "", last: "", full: "" };
+    return name;
+  }
+
   if (/,/.test(input)) {
     const first = input.match(/,(.+)/)[1].trim() || "";
     const last = input.match(/(.+),/)[1].trim() || "";
@@ -58,7 +63,6 @@ const getBookInfo = async books => {
           searchIndex: searchIndex.Books
         })
         .then(res => {
-          console.log(res.data.SearchResult.Items[0]);
           if (res.data.SearchResult) {
             const base = res.data.SearchResult.Items[0] || "";
             const title = base.ItemInfo.Title.DisplayValue || "";
@@ -67,7 +71,6 @@ const getBookInfo = async books => {
             const author = base.ItemInfo.ByLineInfo
               ? base.ItemInfo.ByLineInfo.Contributors[0].Name
               : "";
-
             const { first, last, full } = nameParser(author);
             const rawDate =
               new Date(
@@ -76,7 +79,6 @@ const getBookInfo = async books => {
             const pubDate = rawDate.getFullYear() || "";
             const pages =
               base.ItemInfo.ContentInfo.PagesCount.DisplayValue || "";
-            console.log(base.ItemInfo.ByLineInfo.Contributors);
             const pub =
               base.ItemInfo.ByLineInfo.Manufacturer.DisplayValue || "";
             const htmlStructured = `<div class="ama-body-item">
