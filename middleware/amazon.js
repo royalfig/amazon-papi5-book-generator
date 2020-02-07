@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 const Api = require("amazon-pa-api50");
 const Config = require("amazon-pa-api50/lib/config");
@@ -17,6 +18,9 @@ resourceList = resourceList.concat(resources.getImagesPrimary);
 
 const bookParse = async input => {
   try {
+    fs.writeFile(path.join(__dirname + "/../public/ama-list.txt"), "", err => {
+      if (err) throw err;
+    });
     const books = input.trim().split(/\r\n/);
     const obj = await getBookInfo(books);
     return obj;
@@ -81,13 +85,18 @@ const getBookInfo = async books => {
               base.ItemInfo.ContentInfo.PagesCount.DisplayValue || "";
             const pub =
               base.ItemInfo.ByLineInfo.Manufacturer.DisplayValue || "";
-            const htmlStructured = `<div class="ama-body-item">
+            const brlPage = `<div class="ama-body-item">
                 <a class="ama-body-link" href="${url}" target="_blank" rel="noopener noreferrer">
                     <img class="ama-body-image" src="${img}" alt="${title} by ${full}">
                 </a>
             </div>`;
+            const brlFrontPage = `<div class="ama-fp-item">
+                <a class="ama-fp-link" href="${url}" target="_blank" rel="noopener noreferrer">
+                    <img class="ama-fp-image" src="${img}" alt="${title} by ${full}">
+                </a>
+            </div>`;
 
-            console.log(`Fetching ${title} by ${full}`);
+            // console.log(`Fetching ${title} by ${full}`);
 
             const titleObj = {
               title: title,
@@ -100,13 +109,19 @@ const getBookInfo = async books => {
               pub: pub,
               pubDate: pubDate,
               pages: pages,
-              htmlString: htmlStructured
+              brlFrontPage: brlFrontPage
                 .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
+                .replace(/>/g, "&gt;"),
+              brlPage: brlPage.replace(/</g, "&lt;").replace(/>/g, "&gt;")
             };
 
-            // TODO Add file creation for dl
-
+            fs.appendFile(
+              path.join(__dirname + "/../public/ama-list.txt"),
+              `${title} by ${full} (${pub}, ${pubDate}). ${pages} pages. URL: ${url}, IMG: ${img}\n`,
+              err => {
+                if (err) throw err;
+              }
+            );
             return titleObj;
           }
 
@@ -120,6 +135,7 @@ const getBookInfo = async books => {
       console.log(`Error: ${e}`);
     }
   }
+
   return { books: bookArr, errors: errorArr };
 };
 

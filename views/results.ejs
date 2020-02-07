@@ -18,10 +18,7 @@
         <div class="container">
           <a href="/">
             <figure class="image image is-600x100" style="margin-bottom: 1rem;">
-              <img
-                src="/images/hss_logo.svg"
-                style="width: 600px; max-width: 100%;"
-              />
+              <img src="/images/hss_logo.png" class="hss-logo" />
             </figure>
           </a>
           <h1 class="title"><%= title %></h1>
@@ -29,6 +26,7 @@
           <a href="#preview" class="button is-link">Preview</a>
           <a href="#code" class="button is-link">Code</a>
           <a href="#table" class="button is-link">Table</a>
+          <a href="#list" class="button is-link">List</a>
         </div>
       </div>
     </section>
@@ -69,13 +67,34 @@
       </div>
     </section>
 
+    <!-- CODE  -->
+
     <section class="section">
       <div class="container">
         <h2 class="title is-2" id="code">Code</h2>
+        <div class="tabs">
+          <ul>
+            <li>
+              <a class="brl-btn" data-id="brl-page" role="button">BRL Page</a>
+            </li>
+            <li>
+              <a class="brl-btn" data-id="brl-front-page" role="button"
+                >BRL Front Page</a
+              >
+            </li>
+          </ul>
+        </div>
         <div class="content">
-          <code class="is-family-monospace" style=" user-select: all;">
+          <code class="is-family-monospace brl-page" style=" user-select: all;">
             <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
-            <%- element.htmlString %> <% } ) } %>
+            <%- element.brlPage %> <% } ) } %>
+          </code>
+          <code
+            class="is-family-monospace brl-front-page"
+            style=" user-select: all;"
+          >
+            <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
+            <%- element.brlFrontPage %> <% } ) } %>
           </code>
         </div>
       </div>
@@ -84,6 +103,7 @@
     <section class="section">
       <div class="container">
         <h2 class="title is-2" id="table">Table</h2>
+        <a class="button" href="/ama-list.txt" download>Download</a>
         <table class="table is-striped">
           <thead>
             <tr>
@@ -108,10 +128,48 @@
       </div>
     </section>
 
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-2" id="list">List</h2>
+        <div class="content">
+          <ul>
+            <% if (titleNum > 0) { titles.forEach(function(element, idx) { %>
+            <li>
+              <a href="<%= element.url %>"><em><%= element.title %></em></a> by
+              <%= element.full %>. (<%= element.pub %>, <%= element.pubDate %>)
+              <%= element.pages %> pages.
+            </li>
+            <% } ) } %>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
       <div class="content has-text-centered">
         <p><strong>History of Science Society</strong> Book Search</p>
       </div>
     </footer>
+    <script>
+      const buttons = document.querySelectorAll(".brl-btn");
+      const brlPage = document.querySelector(".brl-page");
+      const brlFrontPage = document.querySelector(".brl-front-page");
+
+      const toggle = input => {
+        const classToHide = "." + input.target.dataset.id;
+        console.log(classToHide === ".brl-page");
+        if (classToHide === ".brl-page") {
+          brlPage.style.display = "block";
+          brlFrontPage.style.display = "none";
+          return;
+        }
+        brlPage.style.display = "none";
+        brlFrontPage.style.display = "block";
+      };
+
+      buttons.forEach(btn => {
+        btn.addEventListener("click", toggle);
+      });
+    </script>
   </body>
 </html>

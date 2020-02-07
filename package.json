@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "css-build": "node-sass --omit-source-map-url sass/mystyles.scss public/stylesheets/mystyles.css",
-    "css-watch": "npm run css-build --watch"
+    "css-watch": "npm run css-build -- --watch"
   },
   "dependencies": {
     "amazon-pa-api50": "0.0.3",

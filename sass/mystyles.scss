@@ -11,6 +11,20 @@ html {
   flex-direction: column;
 }
 
+img.hss-logo {
+  width: 600px;
+  max-width: 100%;
+  transition: opacity 0.2s ease-in;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.brl-front-page {
+  display: none;
+}
+
 .footer {
   margin-top: auto;
 }
